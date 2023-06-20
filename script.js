@@ -325,19 +325,50 @@ const isEven = num => num % 2 === 0;
 console.log(isEven(17));
 console.log(isEven(18));
 
-// labelBalance.addEventListener('click', function () {
-//   [...document.querySelectorAll('.movements_row')].forEach(function (row, i) {
-//     if (i % 2 === 0) {
-//       row.style.backgroundColor = 'blue';
-//     }
-//   });
-// });
-
 labelBalance.addEventListener('click', function () {
   [...document.querySelectorAll('.movements__row')].forEach(function (row, i) {
-    // 0, 2, 4, 6
-    if (i % 2 === 0) row.style.backgroundColor = 'orangered';
-    // 0, 3, 6, 9
-    if (i % 3 === 0) row.style.backgroundColor = 'blue';
+    if (i % 2 === 0) row.style.backgroundColor = '#00C5CE';
   });
 });
+
+const number = 1_28_590;
+console.log(number);
+
+console.log(244949540489092210146677);
+console.log(928398101984848384383880n);
+console.log(BigInt(284742929820));
+
+const high = 5282384329849343773983n;
+const high1 = 973473873937739838193n;
+console.log(high + BigInt(number));
+console.log(high + high1);
+
+console.log(200n == 200);
+console.log(200n === 200);
+console.log(typeof 200n);
+console.log(200n == '200');
+console.log(11 / 2);
+console.log(11n / 2n);
+console.log(high + 'is a very huge number!');
+
+
+///////////////////////////////////////
+// Timers
+
+// setTimeout
+const ingredients = ['olives', 'spinach'];
+const pizzaTimer = setTimeout(
+  (ing1, ing2) => console.log(`Here is your pizza with ${ing1} and ${ing2} 🍕`),
+  3000,
+  ...ingredients
+);
+console.log('Waiting...');
+
+if (ingredients.includes('spinach')) clearTimeout(pizzaTimer);
+
+// setInterval
+setInterval(function () {
+  const now = new Date();
+  console.log(now);
+}, 1000);
+*/
