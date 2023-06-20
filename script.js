@@ -314,3 +314,30 @@ console.log((2.7).toFixed(0));
 console.log((2.7).toFixed(3));
 console.log((2.345).toFixed(2));
 console.log(+(2.345).toFixed(2));
+
+//Remainder Operator
+console.log(18 % 2);
+console.log(18 / 2);
+console.log(17 % 2);
+console.log(17 / 2);
+
+const isEven = num => num % 2 === 0;
+console.log(isEven(17));
+console.log(isEven(18));
+
+// labelBalance.addEventListener('click', function () {
+//   [...document.querySelectorAll('.movements_row')].forEach(function (row, i) {
+//     if (i % 2 === 0) {
+//       row.style.backgroundColor = 'blue';
+//     }
+//   });
+// });
+
+labelBalance.addEventListener('click', function () {
+  [...document.querySelectorAll('.movements__row')].forEach(function (row, i) {
+    // 0, 2, 4, 6
+    if (i % 2 === 0) row.style.backgroundColor = 'orangered';
+    // 0, 3, 6, 9
+    if (i % 3 === 0) row.style.backgroundColor = 'blue';
+  });
+});
