@@ -25,8 +25,8 @@ const account1 = {
     '2023-06-16T23:36:17.929Z',
     '2023-06-20T10:51:36.790Z',
   ],
-  currency: 'EUR',
-  locale: 'pt-PT', // de-DE
+  currency: 'INR',
+  locale: 'en-IN', // de-DE
 };
 
 const account2 = {
@@ -80,23 +80,31 @@ const inputClosePin = document.querySelector('.form__input--pin');
 
 /////////////////////////////////////////////////
 // Functions
+// const local = navigator.language;
+// console.log(local);
+const formatCur = function (value, locale, currency) {
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: currency,
+  }).format(value);
+};
 
-const displayDate = dates => {
+const displayDate = (dates, local) => {
   const date = new Date(dates);
 
   const calDayPassed = (date1, date2) => {
     return Math.abs(date1 - date2) / (1000 * 60 * 60 * 24);
   };
   const dayPassed = Math.trunc(calDayPassed(new Date(), date));
-  const day = `${date.getDate()}`.padStart(2, 0);
-  const month = `${date.getMonth() + 1}`.padStart(2, 0);
-  const year = date.getFullYear();
-  const hr = `${date.getHours()}`.padStart(2, 0);
-  const min = `${date.getMinutes()}`.padStart(2, 0);
+  // const day = `${date.getDate()}`.padStart(2, 0);
+  // const month = `${date.getMonth() + 1}`.padStart(2, 0);
+  // const year = date.getFullYear();
+  // const hr = `${date.getHours()}`.padStart(2, 0);
+  // const min = `${date.getMinutes()}`.padStart(2, 0);
   if (dayPassed === 0) return 'Today';
   if (dayPassed === 1) return 'Yestarday';
   if (dayPassed <= 7) return `${dayPassed} days ago`;
-  return `${day}/${month}/${year} ${hr}:${min}`;
+  return new Intl.DateTimeFormat(local).format(date);
 };
 
 const displayTransactions = function (transactions, sort = false) {
@@ -106,14 +114,21 @@ const displayTransactions = function (transactions, sort = false) {
     : transactions;
   sortTransactions.forEach(function (tranc, i) {
     const type = tranc > 0 ? 'deposit' : 'withdrawal';
-    const date = displayDate(currentAccount.transactionsDates[i]);
+    const date = displayDate(
+      currentAccount.transactionsDates[i],
+      currentAccount.locale
+    );
     const trancRow = `
     <div class="movements__row">
       <div class="movements__type movements__type--${type}">${
       i + 1
     } ${type}</div>
       <div class="movements__date">${date}</div>
-      <div class="movements__value">${tranc.toFixed(2)}₹</div>
+      <div class="movements__value">${formatCur(
+        tranc.toFixed(2),
+        currentAccount.locale,
+        currentAccount.currency
+      )}</div>
     </div>`;
 
     containerMovements.insertAdjacentHTML('afterbegin', trancRow);
@@ -124,7 +139,11 @@ const displayTransactions = function (transactions, sort = false) {
 
 const totalBalance = function (acc) {
   acc.balance = acc.transactions.reduce((bal, tranc) => bal + tranc, 0);
-  labelBalance.textContent = `${acc.balance.toFixed(2)} INR`;
+  labelBalance.textContent = `${formatCur(
+    acc.balance.toFixed(2),
+    currentAccount.locale,
+    currentAccount.currency
+  )}`;
 };
 // totalBalance(account1.transactions);
 
@@ -132,19 +151,31 @@ const totalSummaryDisplay = function (acc) {
   const totalDeposit = acc.transactions
     .filter(tranc => tranc > 0)
     .reduce((dep, tranc) => dep + tranc, 0);
-  labelSumIn.textContent = `${totalDeposit.toFixed(2)} ₹`;
+  labelSumIn.textContent = `${formatCur(
+    totalDeposit.toFixed(2),
+    currentAccount.locale,
+    currentAccount.currency
+  )}`;
 
   const totalWithdraw = acc.transactions
     .filter(tranc => tranc < 0)
     .reduce((wit, tranc) => wit + tranc, 0);
-  labelSumOut.textContent = `${Math.abs(totalWithdraw).toFixed(2)} ₹`;
+  labelSumOut.textContent = `${formatCur(
+    Math.abs(totalWithdraw).toFixed(2),
+    currentAccount.locale,
+    currentAccount.currency
+  )}`;
 
   const totalIntrest = acc.transactions
     .filter(tranc => tranc > 0)
     .map(tranc => (tranc * acc.interestRate) / 100)
     .filter(int => int >= 1)
     .reduce((tot, int) => tot + int, 0);
-  labelSumInterest.textContent = `${totalIntrest.toFixed(2)} ₹`;
+  labelSumInterest.textContent = `${formatCur(
+    totalIntrest.toFixed(2),
+    currentAccount.locale,
+    currentAccount.currency
+  )}`;
 };
 
 // totalSummaryDisplay(account1.transactions);
@@ -193,7 +224,19 @@ btnLogin.addEventListener('click', function (e) {
     inputLoginUsername.value = inputLoginPin.value = '';
     inputLoginPin.blur();
 
-    const pDate = displayDate(Date.now());
+    const options = {
+      hour: 'numeric',
+      minute: 'numeric',
+      day: 'numeric',
+      month: 'numeric',
+      year: 'numeric',
+      weekday: 'long',
+    };
+
+    const pDate = new Intl.DateTimeFormat(
+      currentAccount.locale,
+      options
+    ).format(new Date());
 
     labelDate.textContent = pDate;
 
