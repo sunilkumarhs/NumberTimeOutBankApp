@@ -81,6 +81,16 @@ const inputClosePin = document.querySelector('.form__input--pin');
 /////////////////////////////////////////////////
 // Functions
 
+const displayDate = dates => {
+  const date = new Date(dates);
+  const day = `${date.getDate()}`.padStart(2, 0);
+  const month = `${date.getMonth() + 1}`.padStart(2, 0);
+  const year = date.getFullYear();
+  const hr = `${date.getHours()}`.padStart(2, 0);
+  const min = `${date.getMinutes()}`.padStart(2, 0);
+  return `${day}/${month}/${year} ${hr}:${min}`;
+};
+
 const displayTransactions = function (transactions, sort = false) {
   containerMovements.innerHTML = '';
   const sortTransactions = sort
@@ -88,11 +98,13 @@ const displayTransactions = function (transactions, sort = false) {
     : transactions;
   sortTransactions.forEach(function (tranc, i) {
     const type = tranc > 0 ? 'deposit' : 'withdrawal';
+    const date = displayDate(currentAccount.transactionsDates[i]);
     const trancRow = `
     <div class="movements__row">
       <div class="movements__type movements__type--${type}">${
       i + 1
     } ${type}</div>
+      <div class="movements__date">${date}</div>
       <div class="movements__value">${tranc.toFixed(2)}₹</div>
     </div>`;
 
@@ -173,6 +185,10 @@ btnLogin.addEventListener('click', function (e) {
     inputLoginUsername.value = inputLoginPin.value = '';
     inputLoginPin.blur();
 
+    const pDate = displayDate(Date.now());
+
+    labelDate.textContent = pDate;
+
     // Update UI
     updateUI(currentAccount);
   }
@@ -193,6 +209,10 @@ btnTransfer.addEventListener('click', function (e) {
   ) {
     currentAccount.transactions.push(-amount);
     reciever.transactions.push(amount);
+
+    currentAccount.transactionsDates.push(new Date().toISOString());
+    reciever.transactionsDates.push(new Date().toISOString());
+
     updateUI(currentAccount);
   }
 });
@@ -207,6 +227,9 @@ btnLoan.addEventListener('click', function (e) {
     currentAccount.transactions.some(tranc => tranc > amount * 0.1)
   ) {
     currentAccount.transactions.push(amount);
+
+    currentAccount.transactionsDates.push(new Date().toISOString());
+
     updateUI(currentAccount);
   }
   inputLoanAmount.value = '';
@@ -351,24 +374,31 @@ console.log(11 / 2);
 console.log(11n / 2n);
 console.log(high + 'is a very huge number!');
 
-
 ///////////////////////////////////////
-// Timers
+//Date
 
-// setTimeout
-const ingredients = ['olives', 'spinach'];
-const pizzaTimer = setTimeout(
-  (ing1, ing2) => console.log(`Here is your pizza with ${ing1} and ${ing2} 🍕`),
-  3000,
-  ...ingredients
-);
-console.log('Waiting...');
+const now = new Date();
+console.log(now);
 
-if (ingredients.includes('spinach')) clearTimeout(pizzaTimer);
+console.log(new Date(now));
+console.log(new Date('December 18, 2015'));
+console.log(new Date(2047, 10, 17, 15, 18, 17));
+console.log(new Date(2034, 10, 31));
+console.log(new Date(0));
+console.log(new Date(7 * 24 * 60 * 60 * 1000));
 
-// setInterval
-setInterval(function () {
-  const now = new Date();
-  console.log(now);
-}, 1000);
-*/
+const future = new Date(2047, 7, 15);
+console.log(future);
+console.log(future.getFullYear());
+console.log(future.getMonth());
+console.log(future.getDate());
+console.log(future.getHours());
+console.log(future.getMinutes());
+console.log(future.getSeconds());
+console.log(future.toISOString());
+console.log(future.getTime());
+
+console.log(Date.now());
+console.log(new Date(2449420200000));
+future.setFullYear(1947);
+console.log(future);
