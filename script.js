@@ -277,11 +277,13 @@ btnLoan.addEventListener('click', function (e) {
     amount > 0 &&
     currentAccount.transactions.some(tranc => tranc > amount * 0.1)
   ) {
-    currentAccount.transactions.push(amount);
+    setTimeout(() => {
+      currentAccount.transactions.push(amount);
 
-    currentAccount.transactionsDates.push(new Date().toISOString());
+      currentAccount.transactionsDates.push(new Date().toISOString());
 
-    updateUI(currentAccount);
+      updateUI(currentAccount);
+    }, 5000);
   }
   inputLoanAmount.value = '';
 });
@@ -460,3 +462,24 @@ const calDayPassed = (date1, date2) => {
 
 const dayPasedd = calDayPassed(new Date(2023, 6, 21), new Date(2023, 6, 11));
 console.log(`Day passed: ${dayPasedd}`);
+
+//Timer
+const ingrediants = ['spicy', 'panner'];
+const order = setTimeout(
+  (ing1, ing2) =>
+    console.log(`Your order is dilivered with ${ing1} and ${ing2} fired rice!`),
+  5000,
+  ...ingrediants
+);
+console.log('waiting!!');
+
+if (ingrediants.includes('spicy')) clearTimeout(order);
+
+const watch = setInterval(function () {
+  const date = new Date();
+  const hr = `${date.getHours()}`.padStart(2, 0);
+  const min = `${date.getMinutes()}`.padStart(2, 0);
+  const sec = `${date.getSeconds()}`.padStart(2, 0);
+  console.log(`${hr} : ${min} : ${sec}`);
+}, 1000);
+clearInterval(watch);
