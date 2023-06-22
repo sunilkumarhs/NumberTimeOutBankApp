@@ -203,7 +203,26 @@ const updateUI = function (acc) {
   totalSummaryDisplay(acc);
 };
 
-let currentAccount;
+let currentAccount, timer;
+
+const startLogOutTimer = function () {
+  const ticker = function () {
+    const min = String(Math.trunc(time / 60)).padStart(2, 0);
+    const sec = String(time % 60).padStart(2, 0);
+
+    labelTimer.textContent = `${min} : ${sec}`;
+
+    if (time === 0) {
+      clearInterval(timer);
+      labelWelcome.textContent = 'Login to get started';
+      containerApp.style.opacity = 0;
+    }
+    time--;
+  };
+  let time = 300;
+  ticker();
+  timer = setInterval(ticker, 1000);
+};
 
 btnLogin.addEventListener('click', function (e) {
   // Prevent form from submitting
@@ -240,6 +259,8 @@ btnLogin.addEventListener('click', function (e) {
 
     labelDate.textContent = pDate;
 
+    if (timer) clearInterval(timer);
+    startLogOutTimer();
     // Update UI
     updateUI(currentAccount);
   }
@@ -264,6 +285,9 @@ btnTransfer.addEventListener('click', function (e) {
     currentAccount.transactionsDates.push(new Date().toISOString());
     reciever.transactionsDates.push(new Date().toISOString());
 
+    if (timer) clearInterval(timer);
+    startLogOutTimer();
+
     updateUI(currentAccount);
   }
 });
@@ -277,6 +301,8 @@ btnLoan.addEventListener('click', function (e) {
     amount > 0 &&
     currentAccount.transactions.some(tranc => tranc > amount * 0.1)
   ) {
+    if (timer) clearInterval(timer);
+    startLogOutTimer();
     setTimeout(() => {
       currentAccount.transactions.push(amount);
 
